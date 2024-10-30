@@ -226,6 +226,7 @@ async function createTweet() {
   const tweetText = blames[index];
   let client = getClient();
   await client.v2.tweet(tweetText);
+  console.log(`Tweeted this: ${tweetText}`);
 }
 
 async function scheduleTweets() {
