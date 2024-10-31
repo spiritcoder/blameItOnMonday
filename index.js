@@ -221,12 +221,27 @@ const blames = [
   "The office coffee machine is broken, of course. Thanks a lot, Monday. ☕ #BlameItOnMonday",
 ];
 
+const usedBlames = new Set();
+
 async function createTweet() {
-  const index = Math.floor(Math.random() * blames.length);
-  const tweetText = blames[index];
+  const availableBlames = blames.filter(blame => !usedBlames.has(blame));
+  
+  if (availableBlames.length === 0) {
+    usedBlames.clear();
+  }
+  
+  const index = Math.floor(Math.random() * availableBlames.length);
+  const tweetText = availableBlames[index];
+  
   let client = getClient();
-  await client.v2.tweet(tweetText);
-  console.log(`Tweeted this: ${tweetText}`);
+  try {
+    await client.v2.tweet(tweetText);
+    console.log(`Tweeted this: ${tweetText}`);
+    
+    usedBlames.add(tweetText);
+  } catch (error) {
+    console.error("Error tweeting:", error);
+  }
 }
 
 async function scheduleTweets() {
